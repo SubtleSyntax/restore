@@ -1,5 +1,22 @@
-<ion-view view-title="main module">
+<ion-view view-title="Re:Store">
   <ion-content>
+    <div class="row responsive-sm" style="margin-top:20px;">
+
+      <div class="col">
+        <button class="button button-block button-clear" style="max-height:none;" on-tap="start.gotoScan()">
+          <img height="200" src="main/assets/images/scan_icon@2x.png">
+        </button>
+      </div>
+
+      <div class="col">
+        <button class="button button-block button-clear" style="max-height:none;">
+          <img height="200" src="main/assets/images/scan_icon@2x.png">
+        </button>
+      </div>
+
+    </div>
+
+    <!--
     <ion-list>
       <ion-item class="item item-divider">
         This is your start template!
@@ -10,7 +27,7 @@
       </ion-item>
       <ion-item class="item item-thumbnail">
         images working?<br>
-        <img width="75" src="main/assets/images/yo@2x.png">
+
       </ion-item>
 
       <ion-item class="item">{{start.someData.binding}}</ion-item>
@@ -22,7 +39,7 @@
       <ion-item class="item item-text-wrap">
         <pre>{{start.BUILD | json}}</pre>
       </ion-item>
-
     </ion-list>
+    -->
   </ion-content>
 </ion-view>

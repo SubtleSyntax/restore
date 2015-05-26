@@ -5,18 +5,34 @@ angular.module('main', [
   'ui.router',
   // TODO: load other modules selected during generation
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
   console.log('Allo! Allo from your module: ' + 'main');
 
-  $urlRouterProvider.otherwise('/main');
+  $urlRouterProvider.otherwise('/start');
 
   // some basic routing
   $stateProvider
-    .state('main', {
-      url: '/main',
+    .state('start', {
+      url: '/start',
       templateUrl: 'main/templates/start.html',
       controller: 'StartCtrl as start'
-    });
-  // TODO: do your thing
-});
+    })
+    .state('scan', {
+      url: '/scan',
+      templateUrl: 'main/templates/scan.html',
+      controller: 'ScanCtrl as scan'
+    })
+    .state('sign', {
+      url: '/sign',
+      templateUrl: 'main/templates/sign.html',
+      controller: 'SignCtrl as sign'
+    })
+    .state('view', {
+      url: '/view',
+      templateUrl: 'main/templates/view.html',
+      controller: 'ViewCtrl as view'
+    })
+    ;
+
+}]);
