@@ -16,22 +16,22 @@ angular.module('main', [
     .state('start', {
       url: '/start',
       templateUrl: 'main/templates/start.html',
-      controller: 'StartCtrl as start'
+      controller: 'Start as start'
     })
     .state('scan', {
       url: '/scan',
       templateUrl: 'main/templates/scan.html',
-      controller: 'ScanCtrl as scan'
+      controller: 'Scan as scan'
     })
     .state('sign', {
       url: '/sign',
       templateUrl: 'main/templates/sign.html',
-      controller: 'SignCtrl as sign'
+      controller: 'Sign as sign'
     })
     .state('view', {
       url: '/view',
       templateUrl: 'main/templates/view.html',
-      controller: 'ViewCtrl as view'
+      controller: 'View as view'
     })
     ;
 

@@ -1,17 +1,17 @@
 'use strict';
 angular.module('main')
-.controller('StartCtrl', ['$location', 'Start', 'Config', function ($location, Start, Config) {
+.controller('Scan', function ($location, Data, Config) {
   // bind data from service
-  this.someData = Start.someData;
+  this.someData = 'derp';
   this.ENV = Config.ENV;
   this.BUILD = Config.BUILD;
 
   console.log('Hello from your Controller: StartCtrl in module main:. This is your controller:', this);
   // TODO: do your controller thing
 
-  this.gotoScan = function () {
-    console.log('[Start] Going to Scan');
-    $location.path('/scan');
+  this.goto = function (path) {
+    console.log('[Scan] Going to ' + path);
+    $location.path(('/' + path).replace(/\/+/g, '/'));
   };
 
-}]);
+});

@@ -43,6 +43,7 @@ gulp.task('build-app', ['clean', 'inject-all'], function () {
       .pipe(jsFilter)
       .pipe($.ngAnnotate({
         add: true,
+        single_quotes: true,
         sourcemap: true
       }))
       .pipe($.uglify())
