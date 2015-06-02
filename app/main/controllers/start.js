@@ -1,16 +1,17 @@
 'use strict';
 angular.module('main')
-.controller('Start', function ($location, Data, Config) {
+.controller('Start', function ($scope, $location, $log, Data, Config) {
   // bind data from service
-  this.someData = 'derp';
-  this.ENV = Config.ENV;
-  this.BUILD = Config.BUILD;
+  $scope.ENV = Config.ENV;
+  $scope.BUILD = Config.BUILD;
 
-  console.log('Hello from your Controller: StartCtrl in module main:. This is your controller:', this);
+  $log.log('[Start] Init', this);
 
+  // Data.getAll().then(function (result) {
+  //   $log.info('[Start] Current signature records', result);
+  // });
 
-
-  this.goto = function (path) {
+  $scope.goto = function (path) {
     console.log('[Start] Going to ' + path);
     $location.path(('/' + path).replace(/\/+/g, '/'));
   };

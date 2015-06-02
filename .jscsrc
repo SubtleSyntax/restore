@@ -8,7 +8,7 @@
     "try",
     "catch"
   ],
-  "requireOperatorBeforeLineBreak": true,
+  "requireOperatorBeforeLineBreak": [],
   "validateIndentation": 2,
   "disallowMultipleLineStrings": true,
   "disallowMixedSpacesAndTabs": true,
@@ -47,7 +47,5 @@
   "validateJSDoc": {
     "checkParamNames": true,
     "requireParamTypes": true
-  },
-
-  "disallowMultipleLineBreaks": true
+  }
 }

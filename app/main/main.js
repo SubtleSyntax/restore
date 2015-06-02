@@ -3,11 +3,16 @@ angular.module('main', [
   'ionic',
   'ngCordova',
   'ui.router',
-  // TODO: load other modules selected during generation
+  'xc.indexedDB'
 ])
-.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $indexedDBProvider) {
 
-  console.log('Allo! Allo from your module: ' + 'main');
+  $indexedDBProvider
+    .connection('restore')
+    .upgradeDatabase(1, function (event, db) { //(event, db, tx)
+      db.createObjectStore('signatures', { autoincrement: true });
+    });
+
 
   $urlRouterProvider.otherwise('/start');
 
@@ -35,4 +40,4 @@ angular.module('main', [
     })
     ;
 
-}]);
+});

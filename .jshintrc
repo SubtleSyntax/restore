@@ -18,8 +18,13 @@
   "trailing": true,
   "smarttabs": true,
   "expr": true,
+  "laxcomma": true,
+  "laxbreak": true,
 
   "globals": {
-    "angular": false
+    "window": false,
+    "document": false,
+    "angular": false,
+    "cordova": false
   }
 }
