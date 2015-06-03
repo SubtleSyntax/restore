@@ -35,7 +35,7 @@ angular.module('main')
         created: Date.now()
       });
     } else {
-      return $q.reject(Error('Current scan and signature required to save'));
+      return $q.reject(Error('Current scan and signature required to save', 1000));
     }
   };
 
@@ -59,6 +59,13 @@ angular.module('main')
         console.log('[Data] Raw scan result', result);
 
         // Todo: format / validate scanned data
+        if (!result || result.cancelled) {
+          return $q.reject(Error('cancelled', 1001));
+        }
+
+        if (result.format !== 'QR_CODE') {
+          return $q.reject(Error('invalid', 1002));
+        }
 
         this.currentScan = result;
         return result;
@@ -74,19 +81,19 @@ angular.module('main')
       .then(angular.bind(this, function (result) {
         console.log('[Data] Raw sign result', result);
 
-        // Todo: format / validate signature data
+        // Format / validate signature data
 
         if (!result) {
-          return $q.reject(Error('cancelled')); // User clicked cancel, we got no image data.
+          return $q.reject(Error('cancelled', 1001)); // User clicked cancel, we got no image data.
         }
 
-        var canvas = document.getElementById('signature'),
-        ctx = canvas.getContext('2d');
+        var canvas = document.createElement('canvas')
+          , ctx = canvas.getContext('2d');
+
         canvas.width = result.width;
         canvas.height = result.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.putImageData(result, 0, 0);
-
 
         this.currentSignature = canvas.toDataURL('image/png');
         return this.currentSignature;

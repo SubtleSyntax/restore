@@ -1,11 +1,6 @@
 <ion-view view-title="Re:Store">
   <ion-content>
 
-    <div class="card">
-      {{records}}
-    </div>
-
-
     <div class="card" ng-if="showScan()">
       <div class="item item-divider">
         Scanned QR Data
@@ -41,7 +36,7 @@
         Signature
       </div>
       <div class="item item-text-wrap">
-        <canvas id="signature"></canvas>
+        <img src="{{data.currentSignature}}">
       </div>
     </div>
 
@@ -55,7 +50,7 @@
     </div>
 
 
-    <div class="row" ng-if="showSignPrompt()">
+    <div class="row" ng-if="showSavePrompt()">
       <div class="col">
 
         <button class="button button-block button-outline button-balanced" on-tap="save()">Save</button>

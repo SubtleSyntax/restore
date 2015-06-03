@@ -39,8 +39,7 @@ angular.module('main')
 
 
   $scope.showSavePrompt = function () {
-    return $scope.showScan()
-      && $scope.showSignature();
+    return Data.isValid();
   };
 
   // Scan and Sign functionality
