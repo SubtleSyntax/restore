@@ -24,7 +24,9 @@
   "globals": {
     "window": false,
     "document": false,
+    "Image": false,
     "angular": false,
-    "cordova": false
+    "cordova": false,
+    "vCard": false
   }
 }

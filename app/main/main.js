@@ -2,17 +2,9 @@
 angular.module('main', [
   'ionic',
   'ngCordova',
-  'ui.router',
-  'xc.indexedDB'
+  'ui.router'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $indexedDBProvider) {
-
-  $indexedDBProvider
-    .connection('restore')
-    .upgradeDatabase(1, function (event, db) { //(event, db, tx)
-      db.createObjectStore('signatures', { autoincrement: true });
-    });
-
+.config(function ($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/start');
 

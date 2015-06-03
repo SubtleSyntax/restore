@@ -10,7 +10,7 @@
     "angular-translate": "~2.6.1",
     "angular-translate-loader-static-files": "~2.6.1",
     "angular-localForage": "~1.2.2",
-    "angularjs-indexedDB": "*"
+    "vcard": "~0.2.3"
   },
   "devDependencies": {},
   "resolutions": {

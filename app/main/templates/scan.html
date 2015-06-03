@@ -5,28 +5,31 @@
       <div class="item item-divider">
         Scanned QR Data
       </div>
+      <!--
       <div class="item item-text-wrap">
         {{data.currentScan}}
       </div>
+      -->
+      <div class="item item-text-wrap" ng-repeat="item in scanData">
+        <strong>{{item.label}}</strong>: {{item.value}}
+      </div>
     </div>
 
-    <div class="card" ng-if="showScanError()">
-      <div class="item item-divider">
-        Sorry, there was an error during Scan
-      </div>
-      <div class="item item-text-wrap">
-        {{scanError}}
+    <div class="row" ng-if="showScanError()">
+      <div class="col">
+        <h4>Sorry, there was an error during Scan</h4>
+        <p>Please make sure that you are scanning a QR Code and that you are lining up the code in the scanner carefully.</p>
+
+        <a class="button button-block button-outline button-balanced" href="#/start">Go Back</a>
       </div>
     </div>
 
 
     <div class="row" ng-if="showSignPrompt()">
       <div class="col">
-
-        If the scanned data above is correct, please sign.
+        <p>If the scanned data above is correct, please sign.</p>
 
         <button class="button button-block button-outline button-balanced" on-tap="sign()">Sign</button>
-
       </div>
     </div>
 
@@ -36,7 +39,7 @@
         Signature
       </div>
       <div class="item item-text-wrap">
-        <img src="{{data.currentSignature}}">
+        <img src="{{data.currentSignature}}" style="width:100%">
       </div>
     </div>
 
