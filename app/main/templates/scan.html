@@ -5,11 +5,13 @@
       <div class="item item-divider">
         Scanned QR Data
       </div>
-      <div class="item item-text-wrap" ng-if="scanning">
+      <div class="item item-text-wrap" style="text-align:center;" ng-if="scanning">
         <ion-spinner></ion-spinner>
       </div>
-      <div class="item item-text-wrap" ng-repeat="item in scanData" ng-if="!scanning">
-        <strong>{{item.label}}</strong>: {{item.value}}
+      <div class="item item-text-wrap" ng-if="!scanning">
+        <div ng-repeat="item in scanData">
+          <strong>{{item.label}}</strong>: {{item.value}}
+        </div>
       </div>
     </div>
 
@@ -35,7 +37,7 @@
       <div class="item item-divider">
         Signature
       </div>
-      <div class="item item-text-wrap" ng-if="signing">
+      <div class="item item-text-wrap" style="text-align:center;" ng-if="signing">
         <ion-spinner></ion-spinner>
       </div>
       <div class="item item-text-wrap" ng-if="!signing">
@@ -58,12 +60,6 @@
       </div>
     </div>
 
-
-    <div class="row" ng-if="saving">
-      <div class="col">
-        <ion-spinner></ion-spinner>
-      </div>
-    </div>
 
     <div class="row" ng-if="showSaveSuccess()">
       <div class="col">

@@ -120,6 +120,12 @@ angular.module('main')
         $log.error('[Scan] Scan error: ' + JSON.stringify(err && err.message || err));
 
         $scope.scanning = false;
+
+        if (err.message === 'Cancelled by user') {
+          $location.path('/start');
+          return;
+        }
+
         $scope.scanError = err && err.message || err;
       });
   };
@@ -140,12 +146,13 @@ angular.module('main')
       .catch(function (err) {
         $log.error('[Scan] Sign error: ' + JSON.stringify(err && err.message || err));
 
+        $scope.signing = false;
+
         if (err.message === 'Cancelled by user') {
-          $scope.signError = null;
+          // Do nothing, they should be able to sign again.
           return;
         }
 
-        $scope.signing = false;
         $scope.signError = err && err.message || err;
       });
   };

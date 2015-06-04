@@ -27,6 +27,7 @@
     "Image": false,
     "angular": false,
     "cordova": false,
+    "moment": false,
     "vCard": false
   }
 }

@@ -6,7 +6,7 @@ angular.module('main')
     this.debug = $log.debug || console.debug || console.log;
     this.reset();
 
-    this.debug($window.localStorage.records);
+    //this.debug($window.localStorage.records);
   };
 
 
@@ -51,18 +51,26 @@ angular.module('main')
   };
 
 
+  Data.prototype.saveAll = function (records) {
+    if (angular.isArray(records)) {
+      this.set('records', records);
+    }
+  };
+
+
   Data.prototype.getAll = function () {
     return this.get('records', []);
   };
 
+
   Data.prototype.find = function (params) {
-    if (typeof params === 'string') {
+    if (typeof params === 'string' || typeof params === 'number') {
       params = { id: params };
     }
 
     return this.getAll().filter(function (r) {
-      return Object.keys(params).every(function (k) {
-        return r[k] === params[k];
+      return Object.keys(params || {}).every(function (k) {
+        return String(r[k]) === String(params[k]);
       });
     });
   };
@@ -70,17 +78,17 @@ angular.module('main')
   Data.prototype.insert = function (record) {
     var records = this.getAll();
     records.push(record);
-    this.set('records', records);
+    this.saveAll(records);
   };
 
   Data.prototype.delete = function (params) {
-    if (typeof params === 'string') {
+    if (typeof params === 'string' || typeof params === 'number') {
       params = { id: params };
     }
 
     this.set('records', this.getAll().filter(function (r) {
       return !Object.keys(params).every(function (k) {
-        return r[k] === params[k];
+        return String(r[k]) === String(params[k]);
       });
     }));
   };
