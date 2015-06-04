@@ -1,7 +1,8 @@
 'use strict';
 angular.module('main')
 .controller('Scan', function ($scope, $window, $location, $log, Data, Config) {
-  // bind data from service
+  $log.log('[Scan] Init', this);
+
   $scope.ENV = Config.ENV;
   $scope.BUILD = Config.BUILD;
   $scope.data = Data;
@@ -10,12 +11,23 @@ angular.module('main')
   $scope.scanError = null;
   $scope.signError = null;
 
-  $log.log('[Scan] Init', this);
+  $scope.scanning = false;
+  $scope.signing = false;
+  $scope.saving = false;
+  $scope.saved = false;
+  $scope.saveError = null;
 
-  // Show switches
+  // UI state switches
+
+  $scope.isActive = function () {
+    return $scope.scanning
+      || $scope.signing
+      || $scope.saving;
+  };
+
 
   $scope.showScan = function () {
-    return Data.currentScan
+    return ($scope.scanData || $scope.scanning)
       && !$scope.scanError;
   };
 
@@ -23,15 +35,17 @@ angular.module('main')
     return !!$scope.scanError;
   };
 
+
   $scope.showSignPrompt = function () {
-    return Data.currentScan
+    return !$scope.isActive()
+      && $scope.scanData
       && !$scope.scanError
-      && !Data.currentSignature
+      && !$scope.signData
       && !$scope.signError;
   };
 
   $scope.showSignature = function () {
-    return Data.currentSignature
+    return ($scope.signData || $scope.signing)
       && !$scope.signError;
   };
 
@@ -41,21 +55,44 @@ angular.module('main')
 
 
   $scope.showSavePrompt = function () {
-    return Data.isValid();
+    return !$scope.isActive()
+      && !$scope.saved
+      && Data.isValid();
   };
 
+  $scope.showSaveSuccess = function () {
+    return $scope.saved;
+  };
+
+
   // Scan and Sign functionality
+  $scope.reset = function () {
+    Data.reset();
+
+    $scope.scanData = null;
+    $scope.signData = null;
+    $scope.scanError = null;
+    $scope.signError = null;
+
+    $scope.scanning = false;
+    $scope.signing = false;
+    $scope.saved = false;
+    $scope.saveError = null;
+  };
+
 
   $scope.scan = function () {
-    Data.reset();
+    $scope.reset();
+    $scope.scanning = true;
 
     return Data.scan()
       .then(function (result) {
         $log.log('[Scan] Scan result: ' + JSON.stringify(result));
 
-        $scope.scanError = null;
+        $scope.scanning = false;
         $scope.scanData = [];
 
+        // Prettify the data for showing
         Object.keys(result).forEach(function (k) {
           var label = k.replace(/_/g, ' ');
 
@@ -78,21 +115,27 @@ angular.module('main')
           }
         });
 
-        return result;
       })
       .catch(function (err) {
         $log.error('[Scan] Scan error: ' + JSON.stringify(err && err.message || err));
-        $scope.scanError = err;
+
+        $scope.scanning = false;
+        $scope.scanError = err && err.message || err;
       });
   };
 
 
   $scope.sign = function () {
+    $scope.signing = true;
+    $scope.signData = null;
+    $scope.signError = null;
+
     return Data.sign()
       .then(function (result) {
         $log.log('[Scan] Sign result: ' + JSON.stringify(result));
-        $scope.signError = null;
-        return result;
+
+        $scope.signing = false;
+        $scope.signData = result;
       })
       .catch(function (err) {
         $log.error('[Scan] Sign error: ' + JSON.stringify(err && err.message || err));
@@ -102,28 +145,31 @@ angular.module('main')
           return;
         }
 
+        $scope.signing = false;
         $scope.signError = err && err.message || err;
       });
   };
 
 
   $scope.save = function () {
+    $scope.saving = true;
+    $scope.saveError = null;
+
     Data.save()
       .then(function (result) {
         $log.log('[Scan] Saved: ' + JSON.stringify(result));
-        Data.reset();
-        // todo: success message
-        $location.path('/start');
+
+        $scope.saving = false;
+        $scope.saved = true;
       })
       .catch(function (err) {
         $log.error('[Scan] Save error: ' + JSON.stringify(err && err.message || err));
+
+        $scope.saving = false;
+        $scope.saveError = err && err.message || err;
       });
   };
 
   // Init
   $scope.scan();
-
-
-  //Data.getAll().then(function (result) { $scope.records = result; });
-
 });

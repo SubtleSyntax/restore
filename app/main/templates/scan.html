@@ -5,12 +5,10 @@
       <div class="item item-divider">
         Scanned QR Data
       </div>
-      <!--
-      <div class="item item-text-wrap">
-        {{data.currentScan}}
+      <div class="item item-text-wrap" ng-if="scanning">
+        <ion-spinner></ion-spinner>
       </div>
-      -->
-      <div class="item item-text-wrap" ng-repeat="item in scanData">
+      <div class="item item-text-wrap" ng-repeat="item in scanData" ng-if="!scanning">
         <strong>{{item.label}}</strong>: {{item.value}}
       </div>
     </div>
@@ -33,33 +31,48 @@
       </div>
     </div>
 
-
     <div class="card" ng-if="showSignature()">
       <div class="item item-divider">
         Signature
       </div>
-      <div class="item item-text-wrap">
+      <div class="item item-text-wrap" ng-if="signing">
+        <ion-spinner></ion-spinner>
+      </div>
+      <div class="item item-text-wrap" ng-if="!signing">
         <img src="{{data.currentSignature}}" style="width:100%">
       </div>
     </div>
 
-    <div class="card" ng-if="showSignError()">
-      <div class="item item-divider">
-        Sorry, there was an error during signing
-      </div>
-      <div class="item item-text-wrap">
-        {{signError}}
+    <div class="row" ng-if="showSignError()">
+      <div class="col">
+        <h4>Sorry, there was an error during Signing</h4>
+
+        <a class="button button-block button-outline button-balanced" href="#/start">Go Back</a>
       </div>
     </div>
 
 
     <div class="row" ng-if="showSavePrompt()">
       <div class="col">
-
         <button class="button button-block button-outline button-balanced" on-tap="save()">Save</button>
-
       </div>
     </div>
+
+
+    <div class="row" ng-if="saving">
+      <div class="col">
+        <ion-spinner></ion-spinner>
+      </div>
+    </div>
+
+    <div class="row" ng-if="showSaveSuccess()">
+      <div class="col">
+        <h4>Signature has been recorded</h4>
+
+        <a class="button button-block button-outline button-balanced" href="#/start">Return to Menu</a>
+      </div>
+    </div>
+
 
   </ion-content>
 </ion-view>
