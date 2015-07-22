@@ -1,242 +1,231 @@
-'use strict';
+/* global angular, vCard */
+'use strict'
 angular.module('main')
-.factory('Data', function ($window, $q, $log, Config, Barcode, Signature) {
+  .factory('Data', function ($window, $q, $log, Config, Barcode, Signature) {
+    var Data = function () {
+      this.debug = $log.debug || console.debug || console.log
+      this.reset()
 
-  var Data = function () {
-    this.debug = $log.debug || console.debug || console.log;
-    this.reset();
-
-    //this.debug($window.localStorage.records);
-  };
-
-
-  // Database r/w
-
-  Data.prototype.isValid = function () {
-    return this.currentScan && this.currentSignature;
-  };
-
-  Data.prototype.reset = function () {
-    this.currentScan = null;
-    this.currentSignature = null;
-  };
-
-
-  Data.prototype.set = function (key, value) {
-    $window.localStorage[key] = JSON.stringify(value);
-  };
-
-  Data.prototype.get = function (key, deflt) {
-    return JSON.parse($window.localStorage[key] || 'null') || deflt || {};
-  };
-
-
-  Data.prototype.save = function () {
-    var q = $q.defer(), record;
-
-    if (this.isValid()) {
-      record = angular.copy(this.currentScan);
-
-      record.id = Date.now();
-      record.created = new Date().toISOString();
-      record.signature = this.currentSignature;
-
-      this.insert(record);
-      q.resolve(record);
-    } else {
-      q.reject(Error('Current scan and signature required to save', 1000));
+    // this.debug($window.localStorage.records)
     }
 
-    return q.promise;
-  };
+    // Database r/w
 
-
-  Data.prototype.saveAll = function (records) {
-    if (angular.isArray(records)) {
-      this.set('records', records);
-    }
-  };
-
-
-  Data.prototype.getAll = function () {
-    return this.get('records', []);
-  };
-
-
-  Data.prototype.find = function (params) {
-    if (typeof params === 'string' || typeof params === 'number') {
-      params = { id: params };
+    Data.prototype.isValid = function () {
+      return this.currentScan && this.currentSignature
     }
 
-    return this.getAll().filter(function (r) {
-      return Object.keys(params || {}).every(function (k) {
-        return String(r[k]) === String(params[k]);
-      });
-    });
-  };
-
-  Data.prototype.insert = function (record) {
-    var records = this.getAll();
-    records.push(record);
-    this.saveAll(records);
-  };
-
-  Data.prototype.delete = function (params) {
-    if (typeof params === 'string' || typeof params === 'number') {
-      params = { id: params };
+    Data.prototype.reset = function () {
+      this.currentScan = null
+      this.currentSignature = null
     }
 
-    this.set('records', this.getAll().filter(function (r) {
-      return !Object.keys(params).every(function (k) {
-        return String(r[k]) === String(params[k]);
-      });
-    }));
-  };
+    Data.prototype.set = function (key, value) {
+      $window.localStorage[key] = JSON.stringify(value)
+    }
 
+    Data.prototype.get = function (key, deflt) {
+      return JSON.parse($window.localStorage[key] || 'null') || deflt || {}
+    }
 
-  // Scanning
+    Data.prototype.save = function () {
+      var q = $q.defer()
+      var record
 
-  Data.prototype.scan = function () {
-    this.currentScan = null;
+      if (this.isValid()) {
+        record = angular.copy(this.currentScan)
 
-    return Barcode.scan()
-      .then(angular.bind(this, function (result) {
-        this.debug('[Data] Raw scan result: ' + JSON.stringify(result));
+        record.id = Date.now()
+        record.created = new Date().toISOString()
+        record.signature = this.currentSignature
 
-        // Todo: format / validate scanned data
-        if (!result || result.cancelled) {
-          return $q.reject(Error('Cancelled by user', 1001));
-        }
+        this.insert(record)
+        q.resolve(record)
+      } else {
+        q.reject(Error('Current scan and signature required to save', 1000))
+      }
 
-        // Removed this validation. As long as the scan results in a vCard,
-        // we don't really card if it's a QR
-        // if (result.format !== 'QR_CODE') {
-        //   return $q.reject(Error('Not a QR Code', 1002));
-        // }
+      return q.promise
+    }
 
-        if (!/^BEGIN:VCARD/i.test(result.text)) {
-          return $q.reject(Error('Scanned data is not a vCard', 1003));
-        }
+    Data.prototype.saveAll = function (records) {
+      if (angular.isArray(records)) {
+        this.set('records', records)
+      }
+    }
 
-        // Parse the data
-        var data = vCard.parse(result.text) // result.text.split('\n')
-          , labels = { 'n': 'name', 'fn': 'fullname', 'adr': 'address', 'tel': 'telephone' }
-          , required = { 'n': true }
-          , formatted = { vCard: result.text }
-          , k;
+    Data.prototype.getAll = function () {
+      return this.get('records', [])
+    }
 
-        //this.debug('[Data] Formatted data: ' + JSON.stringify(data));
+    Data.prototype.find = function (params) {
+      if (typeof params === 'string' || typeof params === 'number') {
+        params = { id: params }
+      }
 
-        // Validate required
-        for (k in required) {
-          if (!(data[k] && data[k][0] && data[k][0].value)) {
-            return $q.reject(Error(labels[k] + ' is required', 1010));
+      return this.getAll().filter(function (r) {
+        return Object.keys(params || {}).every(function (k) {
+          return String(r[k]) === String(params[k])
+        })
+      })
+    }
+
+    Data.prototype.insert = function (record) {
+      var records = this.getAll()
+      records.push(record)
+      this.saveAll(records)
+    }
+
+    Data.prototype.delete = function (params) {
+      if (typeof params === 'string' || typeof params === 'number') {
+        params = { id: params }
+      }
+
+      this.set('records', this.getAll().filter(function (r) {
+        return !Object.keys(params).every(function (k) {
+            return String(r[k]) === String(params[k])
+          })
+      }))
+    }
+
+    // Scanning
+
+    Data.prototype.scan = function () {
+      this.currentScan = null
+
+      return Barcode.scan()
+        .then(angular.bind(this, function (result) {
+          this.debug('[Data] Raw scan result: ' + JSON.stringify(result))
+
+          // Todo: format / validate scanned data
+          if (!result || result.cancelled) {
+            return $q.reject(Error('Cancelled by user', 1001))
           }
-        }
 
-        // Add included fields
-        var processValue = function (value) {
-          if (value.length > 1) {
-            // array of values
-            if (value.every(function (o) { return o.meta && o.meta.type; })) {
-              // Each sub object has a type listed
-              var temp = {};
-              value.forEach(function (o) {
-                temp[o.meta.type[0].toLowerCase().replace(/[^\w]/g, '_')] = o.value;
-              });
-              return temp;
+          // Removed this validation. As long as the scan results in a vCard,
+          // we don't really card if it's a QR
+          // if (result.format !== 'QR_CODE') {
+          //   return $q.reject(Error('Not a QR Code', 1002))
+          // }
 
-            } else {
-              // no types
-              return value.map(function (o) {
-                return o.value;
-              });
+          if (!/^BEGIN:VCARD/i.test(result.text)) {
+            return $q.reject(Error('Scanned data is not a vCard', 1003))
+          }
+
+          // Parse the data
+          var data = vCard.parse(result.text) // result.text.split('\n')
+          var labels = { 'n': 'name', 'fn': 'fullname', 'adr': 'address', 'tel': 'telephone' }
+          var required = { 'n': true }
+          var formatted = { vCard: result.text }
+          var k
+
+          // this.debug('[Data] Formatted data: ' + JSON.stringify(data))
+
+          // Validate required
+          for (k in required) {
+            if (!(data[k] && data[k][0] && data[k][0].value)) {
+              return $q.reject(Error(labels[k] + ' is required', 1010))
             }
-          } else {
-            // simple key and value
-            return angular.isArray(value[0].value)
-              ? value[0].value.filter(function (o) { return !!o; })
-              : value[0].value;
           }
-        };
 
+          // Add included fields
+          var processValue = function (value) {
+            if (value.length > 1) {
+              // array of values
+              if (value.every(function (o) { return o.meta && o.meta.type })) {
+                // Each sub object has a type listed
+                var temp = {}
+                value.forEach(function (o) {
+                  temp[o.meta.type[0].toLowerCase().replace(/[^\w]/g, '_')] = o.value
+                })
+                return temp
 
-        for (k in data) {
-          if (data.hasOwnProperty(k)) {
-            this.debug('[Data] ' + k + ' -> ' + JSON.stringify(data[k]));
-            formatted[labels[k] || k] = processValue(data[k]);
+              } else {
+                // no types
+                return value.map(function (o) {
+                  return o.value
+                })
+              }
+            } else {
+              // simple key and value
+              return angular.isArray(value[0].value)
+                ? value[0].value.filter(function (o) { return !!o })
+                : value[0].value
+            }
           }
-        }
 
-        // Find number in house if it's there
-        var match = formatted.vCard.match(/([A-Z]+):num(ber)? ?in ?house[^\d]+(\d+)/i);
-        if (match) {
-          this.debug('[Data] Number in house found in field ' + match[1] + ': ' + match[3]);
+          for (k in data) {
+            if (data.hasOwnProperty(k)) {
+              this.debug('[Data] ' + k + ' -> ' + JSON.stringify(data[k]))
+              formatted[labels[k] || k] = processValue(data[k])
+            }
+          }
 
-          /*jshint camelcase: false */
-          formatted.number_in_house = match[3];
-          formatted.number_in_house_field = match[1];
-        }
+          // Find number in house if it's there
+          var match = formatted.vCard.match(/([A-Z]+):num(ber)? ?in ?house[^\d]+(\d+)/i)
+          if (match) {
+            this.debug('[Data] Number in house found in field ' + match[1] + ': ' + match[3])
 
-        // Done Parsing
+            formatted.number_in_house = match[3]
+            formatted.number_in_house_field = match[1]
+          }
 
-        this.currentScan = formatted;
-        return this.currentScan;
-      }));
-  };
+          // Done Parsing
 
-  // Signing
+          this.currentScan = formatted
+          return this.currentScan
+        }))
+    }
 
-  Data.prototype.sign = function (title, htmlPage) {
-    this.currentSignature = null;
+    // Signing
 
-    return Signature.getSignature(title, htmlPage)
-      .then(angular.bind(this, function (result) {
-        this.debug('[Data] Raw sign result: ' + JSON.stringify(result));
+    Data.prototype.sign = function (title, htmlPage) {
+      this.currentSignature = null
 
-        // Format / validate signature data
+      return Signature.getSignature(title, htmlPage)
+        .then(angular.bind(this, function (result) {
+          this.debug('[Data] Sign complete')
 
-        if (!result) {
-          return $q.reject(Error('Cancelled by user', 1001));
-        }
+          // Format / validate signature data
 
-        // Convert raw canvas data to a base64 encoded png
-        var canvas = document.createElement('canvas')
-          , ctx = canvas.getContext('2d');
+          if (!result) {
+            return $q.reject(Error('Cancelled by user', 1001))
+          }
 
-        canvas.width = result.width;
-        canvas.height = result.height;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.putImageData(result, 0, 0);
+          // Convert raw canvas data to a base64 encoded png
+          var canvas = document.createElement('canvas')
+          var ctx = canvas.getContext('2d')
 
-        this.currentSignature = canvas.toDataURL('image/jpeg', 0.5);
-        return this.currentSignature;
+          canvas.width = result.width
+          canvas.height = result.height
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+          ctx.putImageData(result, 0, 0)
 
-        // Let's resize this?
-        // var resizer = new Image()
-        //   , q = $q.defer();
+          this.currentSignature = canvas.toDataURL('image/png')
+          return this.currentSignature
 
-        // resizer.onload = function () {
-        //   var reCanvas = document.createElement('canvas');
+          // Let's resize this?
+          // var resizer = new Image()
+          //   , q = $q.defer()
 
-        //   reCanvas.width = canvas.width / 2;
-        //   reCanvas.height = canvas.height / 2;
+          // resizer.onload = function () {
+          //   var reCanvas = document.createElement('canvas')
 
-        //   reCanvas.getContext('2d').drawImage(resizer, 0, 0, reCanvas.width, reCanvas.height);
+          //   reCanvas.width = canvas.width / 2
+          //   reCanvas.height = canvas.height / 2
 
-        //   this.currentSignature = reCanvas.toDataURL('image/jpeg', 0.5);
-        //   q.resolve(this.currentSignature);
-        // };
+          //   reCanvas.getContext('2d').drawImage(resizer, 0, 0, reCanvas.width, reCanvas.height)
 
-        // resizer.src = this.currentSignature;
+          //   this.currentSignature = reCanvas.toDataURL('image/jpeg', 0.5)
+          //   q.resolve(this.currentSignature)
+          // }
 
-        // return q.promise;
-      }));
-  };
+          // resizer.src = this.currentSignature
 
+        // return q.promise
+        }))
+    }
 
-
-  // Singleton Instance
-  return new Data();
-});
-
+    // Singleton Instance
+    return new Data()
+  })

@@ -9,7 +9,6 @@
     </author>
     <content src="index.html" />
     <icon density="xhdpi" src="www/main/assets/images/icon_xhdpi.png" />
-    <plugin name="cordova-plugin-whitelist" version="1" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -24,12 +23,15 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <preference name="orientation" value="landscape" />
+    <plugin name="cordova-plugin-whitelist" version="1" />
     <plugin name="cordova-plugin-device" spec="^1.0.0" />
     <plugin name="cordova-plugin-dialogs" spec="^1.1.0" />
     <plugin name="cordova-plugin-network-information" spec="^1.0.0" />
     <plugin name="cordova-plugin-statusbar" spec="^1.0.0" />
     <plugin name="com.phonegap.plugins.barcodescanner" spec="https://github.com/wildabeast/BarcodeScanner.git" />
-    <plugin name="nl.codeyellow.signature" spec="https://bitbucket.org/codeyellow/cordova-plugin-signature-view.git" />
     <engine name="android" spec="^4.0.2" />
     <plugin name="de.appplant.cordova.plugin.email-composer" spec="https://github.com/katzer/cordova-plugin-email-composer.git" />
+    <plugin name="nl.codeyellow.signature" spec="https://github.com/netinhoteixeira/cordova-plugin-signature-view" />
+    <plugin name="com.phonegap.plugins.OrientationLock" spec="https://github.com/cogitor/PhoneGap-OrientationLock.git" />
 </widget>

@@ -1,19 +1,18 @@
-'use strict';
+/* global angular, cordova */
+'use strict'
 angular.module('main')
-.factory('Signature', function ($log, $q) {
+  .factory('Signature', function ($log, $q) {
+    return {
+      getSignature: function (title, htmlPage) {
+        title = title || 'Please sign'
+        htmlPage = htmlPage || ''
 
-  return {
-    getSignature: function (title, htmlPage) {
-      title = title || 'Please sign';
-      htmlPage = htmlPage || '';
+        var Signature = cordova.require('nl.codeyellow.signature.Signature')
 
-      var Signature = cordova.require('nl.codeyellow.signature.Signature')
-        , q = $q.defer();
-
-      Signature.getSignature(q.resolve, q.reject, title, htmlPage);
-
-      return q.promise;
+        return $q(function (resolve, reject) {
+          Signature.getSignature(resolve, reject, title, 'Done', '', htmlPage)
+        })
+      }
     }
-  };
 
-});
+  })
