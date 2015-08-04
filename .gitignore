@@ -8,15 +8,16 @@
 /app/bower_components/
 
 # ionic fonts
-/app/main/assets/fonts/ionicons.*
+# /app/main/assets/fonts/ionicons.*
 
 # cordova
-/platforms/
-/plugins/
+# /platforms/
+# /plugins/
 
 # build folder
-/www/**
+# /www/**
 
 # IDE
 *.sublime-project
 *.sublime-workspace
+.idea
