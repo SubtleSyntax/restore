@@ -56,22 +56,14 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/de.appplant.cordova.plugin.email-composer/www/email_composer.js",
-        "id": "de.appplant.cordova.plugin.email-composer.EmailComposer",
-        "clobbers": [
-            "cordova.plugins.email",
-            "plugin.email"
-        ]
-    },
-    {
         "file": "plugins/nl.codeyellow.signature/www/signature-view-native.js",
         "id": "nl.codeyellow.signature.Signature"
     },
     {
-        "file": "plugins/com.phonegap.plugins.OrientationLock/www/orientationLock.js",
-        "id": "com.phonegap.plugins.OrientationLock.OrientationLock",
+        "file": "plugins/com.jcjee.plugins.emailcomposer/www/EmailComposer.js",
+        "id": "com.jcjee.plugins.emailcomposer.EmailComposer",
         "clobbers": [
-            "OrientationLock"
+            "EmailComposer"
         ]
     }
 ];
@@ -84,9 +76,8 @@ module.exports.metadata =
     "cordova-plugin-network-information": "1.0.0",
     "cordova-plugin-dialogs": "1.1.0",
     "com.phonegap.plugins.barcodescanner": "2.2.0",
-    "de.appplant.cordova.plugin.email-composer": "0.8.2",
     "nl.codeyellow.signature": "0.1",
-    "com.phonegap.plugins.OrientationLock": "0.1"
+    "com.jcjee.plugins.emailcomposer": "1.4.6"
 }
 // BOTTOM OF METADATA
 });

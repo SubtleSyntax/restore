@@ -1,33 +1,34 @@
 <ion-view view-title="Re:Store">
-
-  <!--
   <ion-nav-buttons side="primary">
+    <button class="button" on-tap="exportEmail()" ng-if="showEmail">Export to Email</button>
+    <!--
     <button class="button" ng-click="toggleDelete()">
       Edit
     </button>
     <button class="button button-block button-outline button-balanced" on-tap="data.saveAll([])">Delete All</button>
+    -->
   </ion-nav-buttons>
-  -->
 
   <ion-content>
 
     <ion-list show-delete="showDelete" show-reorder="showReorder" can-swipe="listCanSwipe">
+      <ion-item class="" ng-if="!signatures || !signatures.length">No Signatures</ion-item>
+
       <ion-item class="" ng-repeat="item in signatures track by item.id">
 
         <div class="row" on-tap="openModal(item)">
           <div class="col">{{item._title}}</div>
-          <div class="col">{{item.created}}</div>
+          <div class="col" style="text-align:right;">{{item._createdPretty}}</div>
         </div>
 
         <!--
         <ion-option-button class="button-info" ng-click="edit(item)">Edit</ion-option-button>
         -->
         <ion-option-button class="button-assertive" ng-click="delete(item)">Delete</ion-option-button>
-
         <ion-delete-button class="ion-minus-circled" ng-click="delete(item)"></ion-delete-button>
+
       </ion-item>
     </ion-list>
-
 
   </ion-content>
 </ion-view>

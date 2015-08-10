@@ -51,19 +51,11 @@ angular.module('main')
 
   })
 
-/* global angular, cordova */
+/* global angular */
 'use strict'
 angular.module('main')
   .factory('Email', function ($log, $q) {
     return {
-      isAvailable: function () {
-        var q = $q.defer()
-
-        cordova.plugins.email.isAvailable(q.resolve)
-
-        return q.promise
-      },
-
       open: function (params) {
         // to:          Array, // email addresses for TO field
         // cc:          Array, // email addresses for CC field
@@ -74,11 +66,21 @@ angular.module('main')
         // isHtml:    Boolean, // indicats if the body is HTML or plain text
 
         return $q(function (resolve, reject) {
-          cordova.plugins.email.open(params, resolve)
+          // cordova.plugins.email.open(params, resolve)
+          window.plugins.emailComposer.showEmailComposerWithCallback(
+            resolve,
+            params.subject,
+            params.body,
+            params.to,
+            params.cc,
+            params.bcc,
+            params.isHtml || false,
+            params.attachments || null,
+            params.attachmentsData || null
+          )
         })
       }
     }
-
   })
 
 /* global angular, vCard */
@@ -330,7 +332,7 @@ angular.module('main')
 /* global angular, moment */
 'use strict'
 angular.module('main')
-  .controller('View', function ($scope, $location, $log, $ionicModal, Data, Config) {
+  .controller('View', function ($scope, $location, $log, $ionicModal, Data, Email, Config) {
     $scope.ENV = Config.ENV
     $scope.BUILD = Config.BUILD
     $scope.data = Data
@@ -341,9 +343,15 @@ angular.module('main')
 
     $scope.signatures = []
 
+    $scope.showEmail = true
+    // Email.isAvailable().then(function (available) {
+    //   $scope.showEmail = available
+    // })
+
     $log.log('[View] Init', this)
 
     console.log('[View] Config :: ' + JSON.stringify(Config))
+    // console.log(Data.find())
 
     $scope.toggleDelete = function () {
       $scope.showDelete = !$scope.showDelete
@@ -360,6 +368,7 @@ angular.module('main')
           // Pretty fields
           o._title = o.name.join(', ')
           o._created = moment(o.created)
+          o._createdPretty = o._created.format('M/D/YY H:mm')
 
           // Pretty data list
           var display = []
@@ -390,6 +399,58 @@ angular.module('main')
           // done
           return o
         })
+    }
+
+    $scope.exportEmail = function () {
+      if ($scope.signatures && $scope.signatures.length) {
+        // var json = JSON.stringify($scope.signatures)
+        // var base64 = window.btoa(json)
+        // var base64 = window.btoa(json)
+
+        var count = 1
+        var html = $scope.signatures.map(function (sig) {
+          var sigHtml =
+            '<div>' +
+              '<div>Contact ' + count++ + '</div>' +
+              '<div>' +
+                sig._display.map(function (item) {
+                  return '<b>' + item.label + '</b>: ' + item.value + '<br>'
+                }).join(' ') +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<div>Signature</div>' +
+              '<div>' +
+                '<img src="' + sig.signature + '" style="width:100%">' +
+              '</div>' +
+            '</div>'
+
+          return sigHtml
+        }).join('<hr>')
+
+        var csv = $scope.signatures[0]._display.map(function (item) { return item.label }).join('|') +
+          '\\r\\n' +
+          $scope.signatures.map(function (sig) {
+            return sig._display.map(function (item) { return item.value }).join('|') +
+              sig.signature
+          }).join('\\r\\n')
+
+        var files = $scope.signatures.map(function (sig) {
+          return [
+            sig._title.replace(/[^\w]+/g, '_') + '_' + sig._created.format('YYYYMMDD') + '_signature.png',
+            sig.signature.replace(/^data\:image\/png\;base64\,/, '')
+          ]
+        })
+
+        files.push(['export.csv', window.btoa(csv)])
+
+        Email.open({
+          subject: 'Signature Export from Re:Store App',
+          body: html,
+          isHtml: true,
+          attachmentsData: files
+        }).then(function (derp) { console.log(derp) })
+      }
     }
 
     // Modal
@@ -526,7 +587,8 @@ angular.module('main')
 
       return Data.scan()
         .then(function (result) {
-          $log.log('[Scan] Scan result: ' + JSON.stringify(result))
+          $log.log('[Scan] Scaned')
+          // $log.log('[Scan] Scan result: ' + JSON.stringify(result))
 
           $scope.scanning = false
           $scope.scanData = []
@@ -575,7 +637,8 @@ angular.module('main')
 
       return Data.sign()
         .then(function (result) {
-          $log.log('[Scan] Sign result: ' + JSON.stringify(result))
+          $log.log('[Scan] Signed')
+          // $log.log('[Scan] Sign result: ' + JSON.stringify(result))
 
           $scope.signing = false
           $scope.signData = result
@@ -600,7 +663,8 @@ angular.module('main')
 
       Data.save()
         .then(function (result) {
-          $log.log('[Scan] Saved: ' + JSON.stringify(result))
+          $log.log('[Scan] Saved')
+          // $log.log('[Scan] Saved: ' + JSON.stringify(result))
 
           $scope.saving = false
           $scope.saved = true

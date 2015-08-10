@@ -81,7 +81,8 @@ angular.module('main')
 
       return Data.scan()
         .then(function (result) {
-          $log.log('[Scan] Scan result: ' + JSON.stringify(result))
+          $log.log('[Scan] Scaned')
+          // $log.log('[Scan] Scan result: ' + JSON.stringify(result))
 
           $scope.scanning = false
           $scope.scanData = []
@@ -130,7 +131,8 @@ angular.module('main')
 
       return Data.sign()
         .then(function (result) {
-          $log.log('[Scan] Sign result: ' + JSON.stringify(result))
+          $log.log('[Scan] Signed')
+          // $log.log('[Scan] Sign result: ' + JSON.stringify(result))
 
           $scope.signing = false
           $scope.signData = result
@@ -155,7 +157,8 @@ angular.module('main')
 
       Data.save()
         .then(function (result) {
-          $log.log('[Scan] Saved: ' + JSON.stringify(result))
+          $log.log('[Scan] Saved')
+          // $log.log('[Scan] Saved: ' + JSON.stringify(result))
 
           $scope.saving = false
           $scope.saved = true

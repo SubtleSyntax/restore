@@ -56,15 +56,6 @@
         "is_top_level": false,
         "variables": {}
     },
-    "de.appplant.cordova.plugin.email-composer": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/katzer/cordova-plugin-email-composer.git",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "nl.codeyellow.signature": {
         "source": {
             "type": "git",
@@ -74,10 +65,10 @@
         "is_top_level": true,
         "variables": {}
     },
-    "com.phonegap.plugins.OrientationLock": {
+    "com.jcjee.plugins.emailcomposer": {
         "source": {
             "type": "git",
-            "url": "https://github.com/cogitor/PhoneGap-OrientationLock.git",
+            "url": "https://github.com/jcjee/email-composer.git",
             "subdir": "."
         },
         "is_top_level": true,

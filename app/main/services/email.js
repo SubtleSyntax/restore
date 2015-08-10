@@ -1,16 +1,8 @@
-/* global angular, cordova */
+/* global angular */
 'use strict'
 angular.module('main')
   .factory('Email', function ($log, $q) {
     return {
-      isAvailable: function () {
-        var q = $q.defer()
-
-        cordova.plugins.email.isAvailable(q.resolve)
-
-        return q.promise
-      },
-
       open: function (params) {
         // to:          Array, // email addresses for TO field
         // cc:          Array, // email addresses for CC field
@@ -21,9 +13,19 @@ angular.module('main')
         // isHtml:    Boolean, // indicats if the body is HTML or plain text
 
         return $q(function (resolve, reject) {
-          cordova.plugins.email.open(params, resolve)
+          // cordova.plugins.email.open(params, resolve)
+          window.plugins.emailComposer.showEmailComposerWithCallback(
+            resolve,
+            params.subject,
+            params.body,
+            params.to,
+            params.cc,
+            params.bcc,
+            params.isHtml || false,
+            params.attachments || null,
+            params.attachmentsData || null
+          )
         })
       }
     }
-
   })

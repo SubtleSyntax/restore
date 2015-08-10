@@ -33,11 +33,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"EmailComposer\"><param name=\"android-package\" value=\"de.appplant.cordova.emailcomposer.EmailComposer\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"OrientationLock\"><param name=\"android-package\" value=\"com.plugin.phonegap.OrientationLock\" /></feature>",
+                            "xml": "<feature name=\"EmailComposer\"><param name=\"android-package\" value=\"com.jcjee.plugins.EmailComposer\" /></feature>",
                             "count": 1
                         }
                     ],
@@ -82,6 +78,12 @@
                         },
                         {
                             "xml": "<uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />",
+                            "count": 1
+                        }
+                    ],
+                    "application": [
+                        {
+                            "xml": "<provider android:authorities=\"com.subtlesyntax.restore.plugins.emailcomposer.provider\" android:name=\"com.jcjee.plugins.EmailAttachmentProvider\" />",
                             "count": 1
                         }
                     ]
@@ -590,13 +592,10 @@
         "com.phonegap.plugins.barcodescanner": {
             "PACKAGE_NAME": "com.subtlesyntax.restore"
         },
-        "de.appplant.cordova.plugin.email-composer": {
-            "PACKAGE_NAME": "com.subtlesyntax.restore"
-        },
         "nl.codeyellow.signature": {
             "PACKAGE_NAME": "com.subtlesyntax.restore"
         },
-        "com.phonegap.plugins.OrientationLock": {
+        "com.jcjee.plugins.emailcomposer": {
             "PACKAGE_NAME": "com.subtlesyntax.restore"
         }
     },
