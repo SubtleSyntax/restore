@@ -3,7 +3,8 @@
 angular.module('main', [
   'ionic',
   'ngCordova',
-  'ui.router'
+  'ui.router',
+  'pouchdb'
 ])
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/start')

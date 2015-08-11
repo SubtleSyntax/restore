@@ -1,6 +1,6 @@
 <ion-view view-title="Re:Store">
   <ion-nav-buttons side="primary">
-    <button class="button" on-tap="exportEmail()" ng-if="showEmail">Export to Email</button>
+    <button class="button" on-tap="exportEmail()" ng-if="showEmail" ng-disabled="!signatures || !signatures.length">Export to Email</button>
     <!--
     <button class="button" ng-click="toggleDelete()">
       Edit
@@ -12,9 +12,10 @@
   <ion-content>
 
     <ion-list show-delete="showDelete" show-reorder="showReorder" can-swipe="listCanSwipe">
-      <ion-item class="" ng-if="!signatures || !signatures.length">No Signatures</ion-item>
+      <ion-item class="" ng-if="signaturesLoading" style="text-align:center;"><ion-spinner></ion-spinner></ion-item>
+      <ion-item class="" ng-if="!signaturesLoading && (!signatures || !signatures.length)">No Signatures</ion-item>
 
-      <ion-item class="" ng-repeat="item in signatures track by item.id">
+      <ion-item class="" ng-repeat="item in signatures track by item._id">
 
         <div class="row" on-tap="openModal(item)">
           <div class="col">{{item._title}}</div>
@@ -57,7 +58,7 @@
           Signature
         </div>
         <div class="item item-text-wrap">
-          <img src="{{detail.signature}}" style="width:100%">
+          <img src="{{detail._signature}}" style="width:100%">
         </div>
       </div>
 

@@ -11,7 +11,9 @@
     "angular-translate-loader-static-files": "~2.6.1",
     "angular-localForage": "~1.2.2",
     "vcard": "~0.2.3",
-    "moment": "~2.10.3"
+    "moment": "~2.10.3",
+    "angular-pouchdb": "~2.1.1",
+    "blob-util": "~1.1.1"
   },
   "devDependencies": {},
   "resolutions": {

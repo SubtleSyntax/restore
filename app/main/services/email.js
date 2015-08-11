@@ -1,4 +1,4 @@
-/* global angular */
+/* global angular, cordova */
 'use strict'
 angular.module('main')
   .factory('Email', function ($log, $q) {
@@ -12,19 +12,10 @@ angular.module('main')
         // body:       String, // email body (for HTML, set isHtml to true)
         // isHtml:    Boolean, // indicats if the body is HTML or plain text
 
+        console.log(JSON.stringify(params.attachments))
+
         return $q(function (resolve, reject) {
-          // cordova.plugins.email.open(params, resolve)
-          window.plugins.emailComposer.showEmailComposerWithCallback(
-            resolve,
-            params.subject,
-            params.body,
-            params.to,
-            params.cc,
-            params.bcc,
-            params.isHtml || false,
-            params.attachments || null,
-            params.attachmentsData || null
-          )
+          cordova.plugins.email.open(params, resolve)
         })
       }
     }
