@@ -75,7 +75,7 @@ angular.module('main')
     }
   })
 
-/* global angular, PouchDB, LocalFileSystem, blobUtil, moment, vCard */
+/* global angular, LocalFileSystem, blobUtil, moment, vCard */
 'use strict'
 angular.module('main')
   .factory('Data', function ($window, $q, $log, Config, Barcode, Signature, pouchDB) {
@@ -85,10 +85,10 @@ angular.module('main')
 
       this.db = new pouchDB('restore', { adapter: 'websql' }) // eslint-disable-line
 
-      PouchDB.debug.enable('pouchdb:api')
-      this.db.info().then(function (info) {
-        console.debug('PouchDB info: ' + JSON.stringify(info))
-      })
+      // PouchDB.debug.enable('pouchdb:api')
+      // this.db.info().then(function (info) {
+      //   console.debug('PouchDB info: ' + JSON.stringify(info))
+      // })
     }
 
     // Database r/w
@@ -212,15 +212,19 @@ angular.module('main')
       return this.getAll()
         .then(angular.bind(this, function (docs) {
           var fileExports = []
+          var getValue = function (arr, label) {
+            arr = arr.filter(function (i) { return i.label === label })
+            return arr[0] ? arr[0].value : ''
+          }
 
           // Generate CSV
-          var csv = docs[0]._display.map(function (item) { return item.label }).join('|') +
-            '\r\n' +
+          var header = 'name|fullname|title|number in house|address|telephone|email|url|org|role|bday|note'
+          var csv = header + '\r\n' +
             docs.map(function (sig) {
-              return sig._display.map(function (item) { return item.value }).join('|') // + sig.signature
+              return header.split('|').map(function (label) { return getValue(sig._display, label) }).join('|')
             }).join('\r\n')
 
-          fileExports.push(this.saveFile('export_' + moment().format('YYYYMMDD') + '.csv', csv))
+          fileExports.push(this.saveFile('ReStore_export_' + moment().format('YYYYMMDD') + '.csv', csv))
 
           // Add signatures
           docs.forEach(angular.bind(this, function (doc) {
