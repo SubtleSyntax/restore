@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PATH="platforms/android/build/outputs/apk"
+KEYSTORE="~/Sync/Misc/ssh/subtlesyntax.keystore"
+ALIAS="2S"
+JARSIGNER=`which jarsigner`
+ZIPALIGN="~/.android/sdk/build-tools/22.0.1/zipalign"
+APP="ReStore"
+
+gulp --cordova "build --release"
+$JARSIGNER -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTORE $PATH/android-release-unsigned.apk $ALIAS
+$JARSIGNER -verify -verbose -certs $PATH/android-release-unsigned.apk
+mv $PATH/android-release-unsigned.apk $PATH/android-release-unaligned.apk
+$ZIPALIGN -v 4 $PATH/android-release-unaligned.apk $PATH/$APP.apk
